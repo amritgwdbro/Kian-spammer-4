@@ -1,0 +1,473 @@
+-- [[ ⚡ KIAN SPAMMER V3 - DEVATA EDITION (WITH UI ANIMATIONS) ⚡ ]] --
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextChatService = game:GetService("TextChatService")
+local SoundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+pcall(function()
+	if playerGui:FindFirstChild("KianSpammerGui") then
+		playerGui["KianSpammerGui"]:Destroy()
+	end
+end)
+
+local RP_NAME = "🎀Kian Spammer by (Kian)🎀"
+local RP_BIO  = "the DEVATA spammer by kiAn dad"
+
+-- Play "Weeks" Phonk Music during loading
+local PhonkSound = Instance.new("Sound", SoundService)
+PhonkSound.SoundId = "rbxassetid://9041724185"
+PhonkSound.Volume = 1
+PhonkSound.Looped = true
+pcall(function()
+	PhonkSound:Play()
+end)
+
+-- Robust Chat Send Function
+local function sendMessage(msg)
+	pcall(function()
+		local success = false
+		pcall(function()
+			local textChannels = TextChatService:FindFirstChild("TextChannels")
+			if textChannels then
+				local generalChannel = textChannels:FindFirstChild("RBXGeneral")
+				if generalChannel then
+					generalChannel:SendAsync(msg)
+					success = true
+				end
+			end
+		end)
+
+		if not success then
+			pcall(function()
+				local events = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+				if events then
+					local sayMessage = events:FindFirstChild("SayMessageRequest")
+					if sayMessage then
+						sayMessage:FireServer(msg, "All")
+					end
+				end
+			end)
+		end
+	end)
+end
+
+-- RP Name & Bio Auto Sender
+task.spawn(function()
+	local RE = ReplicatedStorage:WaitForChild("RE", 8)
+	if not RE then return end
+
+	local NameRemote = RE:FindFirstChild("1RPNam1eTex1t")
+	local ColorRemote = RE:FindFirstChild("1RPNam1eColo1r")
+
+	if NameRemote then
+		for i = 1, 5 do
+			pcall(function()
+				NameRemote:FireServer("RolePlayName", RP_NAME)
+				NameRemote:FireServer("RolePlayBio", RP_BIO)
+			end)
+			task.wait(0.3)
+		end
+	end
+
+	if ColorRemote then
+		while true do
+			local c = Color3.fromHSV((tick() % 4) / 4, 1, 1)
+			pcall(function()
+				ColorRemote:FireServer("PickingRPNameColor", c)
+				ColorRemote:FireServer("PickingRPBioColor", c)
+			end)
+			task.wait(0.1)
+		end
+	end
+end)
+
+local ScreenGui = Instance.new("ScreenGui", playerGui)
+ScreenGui.Name = "KianSpammerGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.DisplayOrder = 9999
+
+-- ================= 0% to 100% LOADING BAR GUI =================
+local LoadingFrame = Instance.new("Frame", ScreenGui)
+LoadingFrame.Size = UDim2.fromOffset(340, 140)
+LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+LoadingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+LoadingFrame.ZIndex = 300
+Instance.new("UICorner", LoadingFrame).CornerRadius = UDim.new(0, 12)
+
+local LoadingStroke = Instance.new("UIStroke", LoadingFrame)
+LoadingStroke.Color = Color3.fromRGB(255, 50, 90)
+LoadingStroke.Thickness = 2
+
+local LoadTitle = Instance.new("TextLabel", LoadingFrame)
+LoadTitle.Size = UDim2.new(1, 0, 0, 35)
+LoadTitle.Position = UDim2.fromOffset(0, 12)
+LoadTitle.BackgroundTransparency = 1
+LoadTitle.Text = "⚡ WEEKS PHONK X SPAMCORE LOADING... ⚡"
+LoadTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+LoadTitle.TextSize = 13
+LoadTitle.Font = Enum.Font.SourceSansBold
+LoadTitle.ZIndex = 301
+
+local PercentLbl = Instance.new("TextLabel", LoadingFrame)
+PercentLbl.Size = UDim2.new(1, 0, 0, 25)
+PercentLbl.Position = UDim2.fromOffset(0, 45)
+PercentLbl.BackgroundTransparency = 1
+PercentLbl.Text = "0%"
+PercentLbl.TextColor3 = Color3.fromRGB(0, 255, 120)
+PercentLbl.TextSize = 16
+PercentLbl.Font = Enum.Font.SourceSansBold
+PercentLbl.ZIndex = 301
+
+local BarBg = Instance.new("Frame", LoadingFrame)
+BarBg.Size = UDim2.new(1, -40, 0, 22)
+BarBg.Position = UDim2.fromOffset(20, 85)
+BarBg.BackgroundColor3 = Color3.fromRGB(25, 22, 32)
+BarBg.ZIndex = 301
+Instance.new("UICorner", BarBg).CornerRadius = UDim.new(1, 0)
+
+local BarFill = Instance.new("Frame", BarBg)
+BarFill.Size = UDim2.new(0, 0, 1, 0)
+BarFill.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
+BarFill.ZIndex = 302
+Instance.new("UICorner", BarFill).CornerRadius = UDim.new(1, 0)
+
+-- ================= WARNING / INTRO BOX (Initially Hidden) =================
+local WarningFrame = Instance.new("Frame", ScreenGui)
+WarningFrame.Size = UDim2.fromOffset(400, 220)
+WarningFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+WarningFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+WarningFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+WarningFrame.Visible = false
+WarningFrame.ZIndex = 200
+Instance.new("UICorner", WarningFrame).CornerRadius = UDim.new(0, 14)
+
+local WarnStroke = Instance.new("UIStroke", WarningFrame)
+WarnStroke.Color = Color3.fromRGB(255, 50, 50)
+WarnStroke.Thickness = 2
+
+local WarnTitle = Instance.new("TextLabel", WarningFrame)
+WarnTitle.Size = UDim2.new(1, -20, 0, 35)
+WarnTitle.Position = UDim2.fromOffset(10, 10)
+WarnTitle.BackgroundTransparency = 1
+WarnTitle.Text = "⚠️ WARNING / NOTICE ⚠️"
+WarnTitle.TextColor3 = Color3.fromRGB(255, 50, 50)
+WarnTitle.TextSize = 15
+WarnTitle.Font = Enum.Font.SourceSansBold
+WarnTitle.ZIndex = 201
+
+local WarnMsg = Instance.new("TextLabel", WarningFrame)
+WarnMsg.Size = UDim2.new(1, -30, 0, 100)
+WarnMsg.Position = UDim2.fromOffset(15, 45)
+WarnMsg.BackgroundTransparency = 1
+WarnMsg.Text = "THE COMEBACK KIAN 🥶 THE LEGENDARY SPAMMER HAS BEEN LOADED BY KIAN NOW FUCK YOUR H8TERS BY YHIS SPAMMER"
+WarnMsg.TextColor3 = Color3.fromRGB(255, 0, 0)
+WarnMsg.TextSize = 13
+WarnMsg.Font = Enum.Font.SourceSansBold
+WarnMsg.TextWrapped = true
+WarnMsg.TextXAlignment = Enum.TextXAlignment.Center
+WarnMsg.ZIndex = 201
+
+local ContinueBtn = Instance.new("TextButton", WarningFrame)
+ContinueBtn.Size = UDim2.new(1, -40, 0, 38)
+ContinueBtn.Position = UDim2.fromOffset(20, 155)
+ContinueBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 25)
+ContinueBtn.Text = "▶ CONTINUE TO SPAMCORE"
+ContinueBtn.TextColor3 = Color3.fromRGB(0, 255, 120)
+ContinueBtn.TextSize = 14
+ContinueBtn.Font = Enum.Font.SourceSansBold
+ContinueBtn.ZIndex = 201
+Instance.new("UICorner", ContinueBtn).CornerRadius = UDim.new(0, 8)
+local CStroke = Instance.new("UIStroke", ContinueBtn)
+CStroke.Color = Color3.fromRGB(0, 255, 120)
+CStroke.Thickness = 1.5
+
+-- ================= MODERN MAIN PANEL =================
+local MainScreenHolder = Instance.new("Frame", ScreenGui)
+MainScreenHolder.Name = "MainScreenHolder"
+MainScreenHolder.Size = UDim2.fromOffset(460, 410)
+MainScreenHolder.AnchorPoint = Vector2.new(0.5, 0.5)
+MainScreenHolder.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainScreenHolder.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+MainScreenHolder.Visible = false
+MainScreenHolder.Active = true
+MainScreenHolder.Draggable = true
+Instance.new("UICorner", MainScreenHolder).CornerRadius = UDim.new(0, 14)
+
+local MainStroke = Instance.new("UIStroke", MainScreenHolder)
+MainStroke.Color = Color3.fromRGB(255, 50, 90)
+MainStroke.Thickness = 2
+
+local TopHeader = Instance.new("Frame", MainScreenHolder)
+TopHeader.Size = UDim2.new(1, 0, 0, 45)
+TopHeader.BackgroundColor3 = Color3.fromRGB(20, 18, 25)
+Instance.new("UICorner", TopHeader).CornerRadius = UDim.new(0, 14)
+
+local HeaderTitle = Instance.new("TextLabel", TopHeader)
+HeaderTitle.Size = UDim2.new(1, -50, 1, 0)
+HeaderTitle.Position = UDim2.fromOffset(15, 0)
+HeaderTitle.BackgroundTransparency = 1
+HeaderTitle.Text = "⚡ KIAN SPAMMER V3 - DEVATA ⚡"
+HeaderTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+HeaderTitle.TextSize = 14
+HeaderTitle.Font = Enum.Font.SourceSansBold
+HeaderTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local CloseBtn = Instance.new("TextButton", TopHeader)
+CloseBtn.Size = UDim2.fromOffset(30, 30)
+CloseBtn.AnchorPoint = Vector2.new(1, 0.5)
+CloseBtn.Position = UDim2.new(1, -10, 0.5, 0)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(45, 20, 20)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseBtn.TextSize = 14
+CloseBtn.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
+
+local ContentArea = Instance.new("ScrollingFrame", MainScreenHolder)
+ContentArea.Size = UDim2.new(1, -24, 1, -65)
+ContentArea.Position = UDim2.fromOffset(12, 53)
+ContentArea.BackgroundTransparency = 1
+ContentArea.CanvasSize = UDim2.new(0, 0, 0, 320)
+ContentArea.ScrollBarThickness = 4
+
+-- 4 Target Boxes
+local TargetBoxes = {}
+for i = 1, 4 do
+	local TargetBox = Instance.new("TextBox", ContentArea)
+	TargetBox.Size = UDim2.new(1, 0, 0, 35)
+	TargetBox.Position = UDim2.fromOffset(0, (i - 1) * 42)
+	TargetBox.BackgroundColor3 = Color3.fromRGB(22, 20, 28)
+	TargetBox.PlaceholderText = "Target " .. i .. " Name..."
+	TargetBox.Text = "H8S NAME"
+	TargetBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TargetBox.TextSize = 13
+	TargetBox.Font = Enum.Font.SourceSansBold
+	Instance.new("UICorner", TargetBox).CornerRadius = UDim.new(0, 8)
+	local TStroke = Instance.new("UIStroke", TargetBox)
+	TStroke.Color = Color3.fromRGB(80, 80, 100)
+	TStroke.Thickness = 1
+	table.insert(TargetBoxes, TargetBox)
+end
+
+-- Delay Input Box (Default 1.5)
+local DelayBox = Instance.new("TextBox", ContentArea)
+DelayBox.Size = UDim2.new(1, 0, 0, 35)
+DelayBox.Position = UDim2.fromOffset(0, 172)
+DelayBox.BackgroundColor3 = Color3.fromRGB(22, 20, 28)
+DelayBox.PlaceholderText = "Delay (sec)"
+DelayBox.Text = "1.5"
+DelayBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+DelayBox.TextSize = 13
+DelayBox.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", DelayBox).CornerRadius = UDim.new(0, 8)
+local DStroke = Instance.new("UIStroke", DelayBox)
+DStroke.Color = Color3.fromRGB(80, 80, 100)
+DStroke.Thickness = 1
+
+-- Emoji Cycle Toggle Button
+local EmojiToggleBtn = Instance.new("TextButton", ContentArea)
+EmojiToggleBtn.Size = UDim2.new(1, 0, 0, 35)
+EmojiToggleBtn.Position = UDim2.fromOffset(0, 214)
+EmojiToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 20, 35)
+EmojiToggleBtn.Text = "EMOJI CYCLE: OFF"
+EmojiToggleBtn.TextColor3 = Color3.fromRGB(255, 150, 200)
+EmojiToggleBtn.TextSize = 13
+EmojiToggleBtn.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", EmojiToggleBtn).CornerRadius = UDim.new(0, 8)
+local EStroke = Instance.new("UIStroke", EmojiToggleBtn)
+EStroke.Color = Color3.fromRGB(255, 100, 150)
+EStroke.Thickness = 1
+
+local emojiCycleActive = false
+EmojiToggleBtn.MouseButton1Click:Connect(function()
+	emojiCycleActive = not emojiCycleActive
+	if emojiCycleActive then
+		EmojiToggleBtn.Text = "EMOJI CYCLE: ON"
+		EmojiToggleBtn.TextColor3 = Color3.fromRGB(0, 255, 120)
+		EStroke.Color = Color3.fromRGB(0, 255, 120)
+	else
+		EmojiToggleBtn.Text = "EMOJI CYCLE: OFF"
+		EmojiToggleBtn.TextColor3 = Color3.fromRGB(255, 150, 200)
+		EStroke.Color = Color3.fromRGB(255, 100, 150)
+	end
+end)
+
+-- Start / Stop Button (Dark Green & Dark Red)
+local InitBtn = Instance.new("TextButton", ContentArea)
+InitBtn.Size = UDim2.new(1, 0, 0, 42)
+InitBtn.Position = UDim2.fromOffset(0, 256)
+InitBtn.BackgroundColor3 = Color3.fromRGB(15, 45, 25)
+InitBtn.Text = "▶ INITIALIZE SPAMCORE"
+InitBtn.TextColor3 = Color3.fromRGB(0, 255, 120)
+InitBtn.TextSize = 14
+InitBtn.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", InitBtn).CornerRadius = UDim.new(0, 8)
+local IStroke = Instance.new("UIStroke", InitBtn)
+IStroke.Color = Color3.fromRGB(0, 255, 120)
+IStroke.Thickness = 1.5
+
+-- Credits Label
+local CreditsLbl = Instance.new("TextLabel", ContentArea)
+CreditsLbl.Size = UDim2.new(1, 0, 0, 25)
+CreditsLbl.Position = UDim2.fromOffset(0, 305)
+CreditsLbl.BackgroundTransparency = 1
+CreditsLbl.Text = "Made by Kian | DEVATA EDITION"
+CreditsLbl.TextColor3 = Color3.fromRGB(150, 150, 170)
+CreditsLbl.TextSize = 11
+CreditsLbl.Font = Enum.Font.SourceSansBold
+
+-- ================= SPAMMER LOGIC & UPDATED PRESETS =================
+local spamming = false
+local emojis = {"😒", "😱", "😂", "😈", "🤓", "🗿", "❗", "🥶", "🌌", "📱", "😆", "😃"}
+local emojiIndex = 1
+
+local customPresets = {
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TERI BUS KI NAHI HEIN😂 [TARGET NAME] FARRAR BY KIAN 🥶@@@@@@@@@@@@@@@@@@@@@@",
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TMX MEH MARE GALAXY🌌 [TARGET NAME] TMX MEH MARE MILKY WAY @@@@@@@@@@@@@@@@@@@@@@",
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TMX MEH MARE BAGPACK😱 [TARGET NAME] TMX MEH MARE GHEE🥛@@@@@@@@@@@@@@@@@@@@@@",
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TMX MEH MARE MOBILE📱[TARGET NAME] TMX MEH MARE JHADU 🎀@@@@@@@@@@@@@@@@@@@@@@",
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TMX MEH MARE VOLCANO😱 DARK POWER SATTA SUPER STOCK PATTEH@@@@@@@@@@@@@@@@@@",
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TMX MEH MARE DARK STARTEGY DANGEROUS MISSILE NUCLEAR💥 BOMB",
+	"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[TARGET NAME] TMX MEH MARE RUSSIA🌚 COLOMBIA COUNTRY INDIA PAPA@@@@@@@@@@@@@@@@@@@@"
+}
+
+InitBtn.MouseButton1Click:Connect(function()
+	spamming = not spamming
+	if spamming then
+		InitBtn.Text = "■ STOP SPAMCORE"
+		InitBtn.TextColor3 = Color3.fromRGB(255, 50, 50)
+		IStroke.Color = Color3.fromRGB(255, 50, 50)
+		InitBtn.BackgroundColor3 = Color3.fromRGB(50, 15, 15)
+		
+		task.spawn(function()
+			local idx = 1
+			while spamming do
+				local activeTargetBoxes = {}
+				for _, tb in ipairs(TargetBoxes) do
+					if tb.Text ~= "" then
+						table.insert(activeTargetBoxes, tb.Text)
+					end
+				end
+				
+				local targetVal = #activeTargetBoxes > 0 and activeTargetBoxes[math.random(1, #activeTargetBoxes)] or "H8S NAME"
+				local finalMsg = customPresets[idx]:gsub("%[TARGET NAME%]", targetVal)
+				
+				if emojiCycleActive then
+					finalMsg = finalMsg .. " " .. emojis[emojiIndex]
+					emojiIndex = emojiIndex + 1
+					if emojiIndex > #emojis then emojiIndex = 1 end
+				end
+				
+				idx = idx + 1
+				if idx > #customPresets then idx = 1 end
+
+				sendMessage(finalMsg)
+
+				local userDelay = tonumber(DelayBox.Text) or 1.5
+				userDelay = math.clamp(userDelay, 0.1, 10)
+				task.wait(userDelay)
+			end
+		end)
+	else
+		InitBtn.Text = "▶ INITIALIZE SPAMCORE"
+		InitBtn.TextColor3 = Color3.fromRGB(0, 255, 120)
+		IStroke.Color = Color3.fromRGB(0, 255, 120)
+		InitBtn.BackgroundColor3 = Color3.fromRGB(15, 45, 25)
+	end
+end)
+
+-- ================= TOGGLE BUTTON (🎀 ICON) & ANIMATED CLOSE/OPEN =================
+local ToggleBtn = Instance.new("TextButton", ScreenGui)
+ToggleBtn.Name = "KianToggle"
+ToggleBtn.Size = UDim2.new(0, 45, 0, 45)
+ToggleBtn.Position = UDim2.new(0, 15, 1, -65)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ToggleBtn.Text = "🎀"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.TextSize = 18
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
+
+local T_Stroke = Instance.new("UIStroke", ToggleBtn)
+T_Stroke.Color = Color3.fromRGB(255, 50, 90)
+T_Stroke.Thickness = 2
+
+local function animateWindow(frame, show)
+	if show then
+		frame.Visible = true
+		frame.Size = UDim2.fromOffset(0, 0)
+		TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(460, 410)}):Play()
+	else
+		local tween = TweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.fromOffset(0, 0)})
+		tween:Play()
+		tween.Completed:Connect(function()
+			frame.Visible = false
+			frame.Size = UDim2.fromOffset(460, 410)
+		end)
+	end
+end
+
+CloseBtn.MouseButton1Click:Connect(function()
+	animateWindow(MainScreenHolder, false)
+end)
+
+local mainOpen = false
+ToggleBtn.MouseButton1Click:Connect(function()
+	mainOpen = not mainOpen
+	animateWindow(MainScreenHolder, mainOpen)
+end)
+
+-- ================= CONTINUE BUTTON ANIMATED EVENT =================
+ContinueBtn.MouseButton1Click:Connect(function()
+	sendMessage("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@KIAN SPAMMER LOADED 🥶[BE READY H8TERS] THIS SPAMMER GOING TO DISBANNED YOU")
+	
+	-- Fade/Scale out Warning Box smoothly
+	TweenService:Create(WarningFrame, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.fromOffset(0, 0)}):Play()
+	task.wait(0.25)
+	WarningFrame:Destroy()
+	
+	-- Open Main Spammer with Smooth Animation
+	mainOpen = true
+	animateWindow(MainScreenHolder, true)
+end)
+
+-- ================= LOADING BAR ANIMATION LOGIC =================
+task.spawn(function()
+	local duration = 3.0
+	local startTime = tick()
+	
+	while true do
+		local elapsed = tick() - startTime
+		local alpha = math.clamp(elapsed / duration, 0, 1)
+		local percent = math.floor(alpha * 100)
+		
+		PercentLbl.Text = percent .. "%"
+		BarFill.Size = UDim2.new(alpha, 0, 1, 0)
+		
+		if alpha >= 1 then
+			LoadTitle.Text = "⚡ WEEKS PHONK LOADED! ⚡"
+			task.wait(0.4)
+			
+			-- Animate out Loading Bar
+			TweenService:Create(LoadingFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.fromOffset(0, 0)}):Play()
+			task.wait(0.2)
+			LoadingFrame:Destroy()
+			pcall(function() PhonkSound:Stop() end)
+			
+			-- Animate in Warning Box smoothly
+			WarningFrame.Visible = true
+			WarningFrame.Size = UDim2.fromOffset(0, 0)
+			TweenService:Create(WarningFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(400, 220)}):Play()
+			break
+		end
+		task.wait(0.03)
+	end
+end)
